@@ -29,3 +29,8 @@ Package home page: https://pypi.org/project/yfinance/
   combined investment value line graph for 3 months (closing day price) 
   Pie chart with total value by security ($ and 😖
 
+## How to finish the task
+- Clone this repository
+- Create a new branch with your name
+- when all the requirements are met, push the branch to github
+
