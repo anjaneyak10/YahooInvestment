@@ -59,7 +59,6 @@ def get_total_investment_data(investments):
         three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
         investment_data[ticker].append(-three_months_ago_data.close_price+ current_price.close_price)
         investment_data[ticker].append(three_months_ago_percentage)
-        print("anjan",investment_data[ticker])
         stock_data = StockData.objects.filter(ticker=ticker, date__range=(start_date, end_date))
         dates = [data.date for data in stock_data]
         if close_prices:
@@ -117,7 +116,6 @@ def get_investment_data(investments):
         three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
         investment_data[ticker].append(-three_months_ago_data.close_price+ current_price.close_price)
         investment_data[ticker].append(three_months_ago_percentage)
-        print("anjan",investment_data[ticker])
         stock_data = StockData.objects.filter(ticker=ticker, date__range=(start_date, end_date))
         dates = [data.date for data in stock_data]
         close_prices = [data.close_price for data in stock_data]
