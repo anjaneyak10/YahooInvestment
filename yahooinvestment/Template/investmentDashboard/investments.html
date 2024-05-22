@@ -1,0 +1,48 @@
+{% extends 'adminlte/base.html' %}
+
+<!-- Set title of app -->
+{% block title %}TestApp{% endblock %}
+
+<!-- Specify content of main body of page -->
+{% block content %}
+<h1>My Investments</h1>
+ <h1>All Investments</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>Quantity</th>
+                <th>Purchase Date</th>
+                <th>Purchase Price ($)</th>
+                <th>Investment Value at Purchase ($)</th>
+                <th>Current Price ($)</th>
+                <th>1 Day Change ($)</th>
+                <th>1 Day Change (%)</th>
+                <th>3 Months Change ($)</th>
+                <th>3 Months Change (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticker, data in investment_data.items %}
+            <tr>
+                <td>{{ ticker }}</td>
+                <td>{{ data.0 }}</td>
+                <td>{{ data.1 }}</td>
+                <td>{{ data.2 }}</td>
+                <td>{{ data.3 }}</td>
+                <td>{{ data.4 }}</td>
+                <td>{{ data.5 }}</td>
+                <td>{{ data.6 }}</td>
+                <td>{{ data.7 }}</td>
+                <td>{{ data.8 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% for plot_html in plot_htmls %}
+    {{ plot_html|safe }}
+{% endfor %}
+<h2>Current Investment Value Distribution</h2>
+    {{ pie_chart_html|safe }}
+{% endblock %}
