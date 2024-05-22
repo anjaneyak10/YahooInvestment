@@ -7,7 +7,7 @@ from django.db import IntegrityError
 
 def home(request):
     indexStockPriceData(request.GET.get('stock'))
-    # fetch_and_save_dividend_data(request.GET.get('stock'))
+    fetch_and_save_dividend_data(request.GET.get('stock'))
     return HttpResponse("Data indexed successfully")
 def indexStockPriceData(stock_ticker):
     # stock_ticker = request.GET.get('stock')

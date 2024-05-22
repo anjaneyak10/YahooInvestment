@@ -1,7 +1,7 @@
 {% extends 'adminlte/base.html' %}
 
 <!-- Set title of app -->
-{% block title %}TestApp{% endblock %}
+{% block title %}Investment Dashboard{% endblock %}
 
 <!-- Specify content of main body of page -->
 {% block content %}
@@ -55,7 +55,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h2>Current Investment in each share</h2>
+                <h2>Tracking investments at Schwab</h2>
                 {% for plot_html in plot_htmls %}
                     {{ plot_html|safe }}
                 {% endfor %}

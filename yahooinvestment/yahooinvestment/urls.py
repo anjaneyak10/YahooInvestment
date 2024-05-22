@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('addInvestments/',include("queryAndIndexInvestmentData.urls")),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('', RedirectView.as_view(url='admin/')),
+    path('', RedirectView.as_view(url='investmentDashboard/')),
     path('investmentDashboard/', include("investmentDashboard.urls")),
 
 ]
