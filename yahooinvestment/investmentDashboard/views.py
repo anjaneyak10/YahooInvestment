@@ -31,34 +31,13 @@ def get_html_from_plot(fig):
 def get_total_investment_data(investments):
     plot_htmls = []
     investment_data = dict()
-    total_value=0
-    total_investment =0
     plt.figure()
     close_prices = None
     for investment in investments:
         start_date = date(2023, 12,31)
         end_date = date(2024, 3, 28)
+        investment_data[investment['ticker']] = get_investment_data_from_ticker(investment)
         ticker = investment['ticker']
-        investment_data[ticker] = []
-        investment_data[ticker].append(investment['quantity'])
-        investment_data[ticker].append(datetime.strptime(investment['purchase_date'], '%Y-%m-%d').date())
-        investment_data[ticker].append(StockData.objects.filter(ticker=ticker, date=datetime.strptime(investment['purchase_date'], '%Y-%m-%d').date())[0].close_price)
-        total_investment += investment_data[ticker][-1]* investment['quantity']
-        investment_data[ticker].append(investment_data[ticker][-1]* investment['quantity'])
-        current_price = StockData.objects.filter(ticker=ticker, date=end_date).first()
-        total_value += current_price.close_price*investment['quantity']
-        investment_data[ticker].append(current_price.close_price)
-        investment_data[ticker].append(current_price.close_price*investment['quantity'])
-        one_day_ago = end_date - timedelta(days=1)
-        one_day_ago_data = StockData.objects.filter(ticker=ticker, date=one_day_ago).first()
-        one_day_ago_percentage= ((current_price.close_price - one_day_ago_data.close_price)/one_day_ago_data.close_price)*100
-        investment_data[ticker].append(-one_day_ago_data.close_price+ current_price.close_price)
-        investment_data[ticker].append(one_day_ago_percentage)
-        three_months_ago = end_date - timedelta(days=92)
-        three_months_ago_data = StockData.objects.filter(ticker=ticker, date=three_months_ago).first()
-        three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
-        investment_data[ticker].append(-three_months_ago_data.close_price+ current_price.close_price)
-        investment_data[ticker].append(three_months_ago_percentage)
         stock_data = StockData.objects.filter(ticker=ticker, date__range=(start_date, end_date))
         dates = [data.date for data in stock_data]
         if close_prices:
@@ -71,7 +50,7 @@ def get_total_investment_data(investments):
     plt.ylabel('Close Price')
     plt.title('Stock Close Prices')
     plt.legend()
-    plot_html = get_html_from_plot(plt.gcf())  # Assuming you have a function to convert Matplotlib figures to HTML strings
+    plot_html = get_html_from_plot(plt.gcf())
     plot_htmls.append(plot_html)
     pie_chart_html = ''
     labels= []
@@ -89,33 +68,12 @@ def get_total_investment_data(investments):
 def get_investment_data(investments):
     plot_htmls = []
     investment_data = dict()
-    total_value=0
-    total_investment =0
     plt.figure()
     for investment in investments:
         start_date = date(2023, 12,31)
         end_date = date(2024, 3, 28)
+        investment_data[investment['ticker']] = get_investment_data_from_ticker(investment)
         ticker = investment['ticker']
-        investment_data[ticker] = []
-        investment_data[ticker].append(investment['quantity'])
-        investment_data[ticker].append(datetime.strptime(investment['purchase_date'], '%Y-%m-%d').date())
-        investment_data[ticker].append(StockData.objects.filter(ticker=ticker, date=datetime.strptime(investment['purchase_date'], '%Y-%m-%d').date())[0].close_price)
-        total_investment += investment_data[ticker][-1]* investment['quantity']
-        investment_data[ticker].append(investment_data[ticker][-1]* investment['quantity'])
-        current_price = StockData.objects.filter(ticker=ticker, date=end_date).first()
-        total_value += current_price.close_price*investment['quantity']
-        investment_data[ticker].append(current_price.close_price)
-        investment_data[ticker].append(current_price.close_price*investment['quantity'])
-        one_day_ago = end_date - timedelta(days=1)
-        one_day_ago_data = StockData.objects.filter(ticker=ticker, date=one_day_ago).first()
-        one_day_ago_percentage= ((current_price.close_price - one_day_ago_data.close_price)/one_day_ago_data.close_price)*100
-        investment_data[ticker].append(-one_day_ago_data.close_price+current_price.close_price)
-        investment_data[ticker].append(one_day_ago_percentage)
-        three_months_ago = end_date - timedelta(days=92)
-        three_months_ago_data = StockData.objects.filter(ticker=ticker, date=three_months_ago).first()
-        three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
-        investment_data[ticker].append(-three_months_ago_data.close_price+ current_price.close_price)
-        investment_data[ticker].append(three_months_ago_percentage)
         stock_data = StockData.objects.filter(ticker=ticker, date__range=(start_date, end_date))
         dates = [data.date for data in stock_data]
         close_prices = [data.close_price for data in stock_data]
@@ -131,6 +89,7 @@ def get_investment_data(investments):
     sizes=[]
     for key in investment_data.keys():
         labels.append(key)
+        print(key,investment_data)
         sizes.append(investment_data[key][3])
     plt.figure()
     plt.pie(sizes, labels=labels, autopct=lambda x: '{:,.2f}'.format(x),startangle=140)
@@ -138,3 +97,27 @@ def get_investment_data(investments):
     plt.title('Current Investment Value Distribution')
     pie_chart_html = get_html_from_plot(plt.gcf())
     return [investments, plot_htmls, investment_data,pie_chart_html]
+
+
+def get_investment_data_from_ticker(investment):
+    investment_data = list()
+    curr_date = date(2024, 3, 28)
+    ticker = investment['ticker']
+    investment_data.append(investment['quantity'])
+    investment_data.append(datetime.strptime(investment['purchase_date'], '%Y-%m-%d').date())
+    investment_data.append(StockData.objects.filter(ticker=ticker, date=datetime.strptime(investment['purchase_date'], '%Y-%m-%d').date())[0].close_price)
+    investment_data.append(investment_data[-1]* investment['quantity'])
+    current_price = StockData.objects.filter(ticker=ticker, date=curr_date).first()
+    investment_data.append(current_price.close_price)
+    investment_data.append(current_price.close_price*investment['quantity'])
+    one_day_ago = curr_date - timedelta(days=1)
+    one_day_ago_data = StockData.objects.filter(ticker=ticker, date=one_day_ago).first()
+    one_day_ago_percentage= ((current_price.close_price - one_day_ago_data.close_price)/one_day_ago_data.close_price)*100
+    investment_data.append(-one_day_ago_data.close_price+current_price.close_price)
+    investment_data.append(one_day_ago_percentage)
+    three_months_ago = curr_date - timedelta(days=92)
+    three_months_ago_data = StockData.objects.filter(ticker=ticker, date=three_months_ago).first()
+    three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
+    investment_data.append(-three_months_ago_data.close_price+ current_price.close_price)
+    investment_data.append(three_months_ago_percentage)
+    return investment_data

@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-md-12">
         <h1>My Investments at Schwab</h1>
-<!--        <h2>Schwab Investments</h2>-->
+<!--        <h2>Fidelity Investments</h2>-->
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
@@ -31,19 +31,19 @@
                         <tbody>
                             {% for ticker, data in investment_data.items %}
                             <tr>
-                                <td>{{ ticker }}</td>
-                                <td>{{ data.0 }}</td>
-                                <td>{{ data.1 }}</td>
-                                <td>{{ data.2 }}</td>
-                                <td>{{ data.3 }}</td>
-                                <td>{{ data.4 }}</td>
-                                <td>{{ data.5 }}</td>
-                                <td style="color: {% if data.6 > 0 %}green{% else %}red{% endif %}">{{ data.6 }}</td>
-                                <td style="color: {% if data.7 > 0 %}green{% else %}red{% endif %}">{{ data.7 }}</td>
-                                <td style="color: {% if data.8 > 0 %}green{% else %}red{% endif %}">{{ data.8 }}</td>
-                                <td style="color: {% if data.9 > 0 %}green{% else %}red{% endif %}">{{ data.9 }}</td>
-                            </tr>
-                            {% endfor %}
+    <td>{{ ticker }}</td>
+    <td>{{ data.0|floatformat:2 }}</td>
+    <td>{{ data.1}}</td>
+    <td>{{ data.2|floatformat:2 }}</td>
+    <td>{{ data.3|floatformat:2 }}</td>
+    <td>{{ data.4|floatformat:2 }}</td>
+    <td>{{ data.5|floatformat:2 }}</td>
+    <td style="color: {% if data.6 > 0 %}green{% else %}red{% endif %}">{{ data.6|floatformat:2 }}</td>
+    <td style="color: {% if data.7 > 0 %}green{% else %}red{% endif %}">{{ data.7|floatformat:2 }}</td>
+    <td style="color: {% if data.8 > 0 %}green{% else %}red{% endif %}">{{ data.8|floatformat:2 }}</td>
+    <td style="color: {% if data.9 > 0 %}green{% else %}red{% endif %}">{{ data.9|floatformat:2 }}</td>
+</tr>
+                    {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -55,7 +55,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-body">
-                <h2>Tracking investments at Schwab</h2>
+                <h2>Tracking investments at Fidelity</h2>
                 {% for plot_html in plot_htmls %}
                     {{ plot_html|safe }}
                 {% endfor %}

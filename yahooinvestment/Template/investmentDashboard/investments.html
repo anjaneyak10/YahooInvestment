@@ -30,19 +30,20 @@
                         </thead>
                         <tbody>
                             {% for ticker, data in investment_data.items %}
-                            <tr>
-                                <td>{{ ticker }}</td>
-                                <td>{{ data.0 }}</td>
-                                <td>{{ data.1 }}</td>
-                                <td>{{ data.2 }}</td>
-                                <td>{{ data.3 }}</td>
-                                <td>{{ data.4 }}</td>
-                                <td>{{ data.5 }}</td>
-                                <td style="color: {% if data.6 > 0 %}green{% else %}red{% endif %}">{{ data.6 }}</td>
-                                <td style="color: {% if data.7 > 0 %}green{% else %}red{% endif %}">{{ data.7 }}</td>
-                                <td style="color: {% if data.8 > 0 %}green{% else %}red{% endif %}">{{ data.8 }}</td>
-                                <td style="color: {% if data.9 > 0 %}green{% else %}red{% endif %}">{{ data.9 }}</td>
-                            </tr>
+                           <tr>
+    <td>{{ ticker }}</td>
+    <td>{{ data.0|floatformat:2 }}</td>
+    <td>{{ data.1 }}</td>
+    <td>{{ data.2|floatformat:2 }}</td>
+    <td>{{ data.3|floatformat:2 }}</td>
+    <td>{{ data.4|floatformat:2 }}</td>
+    <td>{{ data.5|floatformat:2 }}</td>
+    <td style="color: {% if data.6 > 0 %}green{% else %}red{% endif %}">{{ data.6|floatformat:2 }}</td>
+    <td style="color: {% if data.7 > 0 %}green{% else %}red{% endif %}">{{ data.7|floatformat:2 }}</td>
+    <td style="color: {% if data.8 > 0 %}green{% else %}red{% endif %}">{{ data.8|floatformat:2 }}</td>
+    <td style="color: {% if data.9 > 0 %}green{% else %}red{% endif %}">{{ data.9|floatformat:2 }}</td>
+</tr>
+
                             {% endfor %}
                         </tbody>
                     </table>
