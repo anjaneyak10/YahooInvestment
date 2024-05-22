@@ -48,16 +48,17 @@ def get_total_investment_data(investments):
         current_price = StockData.objects.filter(ticker=ticker, date=end_date).first()
         total_value += current_price.close_price*investment['quantity']
         investment_data[ticker].append(current_price.close_price)
+        investment_data[ticker].append(current_price.close_price*investment['quantity'])
         one_day_ago = end_date - timedelta(days=1)
         one_day_ago_data = StockData.objects.filter(ticker=ticker, date=one_day_ago).first()
         one_day_ago_percentage= ((current_price.close_price - one_day_ago_data.close_price)/one_day_ago_data.close_price)*100
-        investment_data[ticker].append(-one_day_ago_data.close_price+ investment_data[ticker][-1])
+        investment_data[ticker].append(-one_day_ago_data.close_price+ current_price.close_price)
         investment_data[ticker].append(one_day_ago_percentage)
         three_months_ago = end_date - timedelta(days=92)
         three_months_ago_data = StockData.objects.filter(ticker=ticker, date=three_months_ago).first()
-        three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/three_months_ago_data.close_price)*100
+        three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
+        investment_data[ticker].append(-three_months_ago_data.close_price+ current_price.close_price)
         investment_data[ticker].append(three_months_ago_percentage)
-        investment_data[ticker].append(-three_months_ago_data.close_price+ investment_data[ticker][-2])
         print("anjan",investment_data[ticker])
         stock_data = StockData.objects.filter(ticker=ticker, date__range=(start_date, end_date))
         dates = [data.date for data in stock_data]
@@ -105,16 +106,17 @@ def get_investment_data(investments):
         current_price = StockData.objects.filter(ticker=ticker, date=end_date).first()
         total_value += current_price.close_price*investment['quantity']
         investment_data[ticker].append(current_price.close_price)
+        investment_data[ticker].append(current_price.close_price*investment['quantity'])
         one_day_ago = end_date - timedelta(days=1)
         one_day_ago_data = StockData.objects.filter(ticker=ticker, date=one_day_ago).first()
         one_day_ago_percentage= ((current_price.close_price - one_day_ago_data.close_price)/one_day_ago_data.close_price)*100
-        investment_data[ticker].append(-one_day_ago_data.close_price+ investment_data[ticker][-1])
+        investment_data[ticker].append(-one_day_ago_data.close_price+current_price.close_price)
         investment_data[ticker].append(one_day_ago_percentage)
         three_months_ago = end_date - timedelta(days=92)
         three_months_ago_data = StockData.objects.filter(ticker=ticker, date=three_months_ago).first()
-        three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/three_months_ago_data.close_price)*100
+        three_months_ago_percentage= ((current_price.close_price - three_months_ago_data.close_price)/current_price.close_price)*100
+        investment_data[ticker].append(-three_months_ago_data.close_price+ current_price.close_price)
         investment_data[ticker].append(three_months_ago_percentage)
-        investment_data[ticker].append(-three_months_ago_data.close_price+ investment_data[ticker][-2])
         print("anjan",investment_data[ticker])
         stock_data = StockData.objects.filter(ticker=ticker, date__range=(start_date, end_date))
         dates = [data.date for data in stock_data]
