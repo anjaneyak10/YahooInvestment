@@ -8,26 +8,30 @@ from .models import StockData
 import matplotlib.pyplot as plt
 import mpld3
 
+# This is the function that will be called when /investments is called
 def investments_view(request):
     investment = settings.STATIC_INVESTMENTS
     investment_data=get_total_investment_data(investment)
     return render(request, 'investmentDashboard/investments.html', {'static_investments': investment_data[0], 'plot_htmls': investment_data[1], 'investment_data': investment_data[2],'pie_chart_html': investment_data[3]})
 
+# This is the function that will be called when /fidelity is called
 def fidelity_view(request):
     fidelity_investments = [investment for investment in settings.STATIC_INVESTMENTS if investment['broker'] == 'Fidelity']
     investment_data=get_investment_data(fidelity_investments)
     return render(request, 'investmentDashboard/fidelity.html', {'static_investments': investment_data[0], 'plot_htmls': investment_data[1], 'investment_data': investment_data[2],'pie_chart_html': investment_data[3]})
-
+# This is the function that will be called when /schwab is called
 def schwab_view(request):
     schwab_investments = [investment for investment in settings.STATIC_INVESTMENTS if investment['broker'] == 'Schwab']
     investment_data=get_investment_data(schwab_investments)
     return render(request, 'investmentDashboard/schwab.html', {'static_investments': investment_data[0], 'plot_htmls': investment_data[1], 'investment_data': investment_data[2],'pie_chart_html': investment_data[3]})
 
+#This function converts a matplotlib figure to an HTML string
 def get_html_from_plot(fig):
     html_string = mpld3.fig_to_html(fig)
     return html_string
 
 
+#This function is used to get the investments and then plot the combined value for all investments and the distribution of the investments
 def get_total_investment_data(investments):
     plot_htmls = []
     investment_data = dict()
@@ -65,6 +69,7 @@ def get_total_investment_data(investments):
     pie_chart_html = get_html_from_plot(plt.gcf())
     return [investments, plot_htmls, investment_data,pie_chart_html]
 
+#This function is used to get the investments and then plot the data for each investment and the distribution of the investments
 def get_investment_data(investments):
     plot_htmls = []
     investment_data = dict()
@@ -98,7 +103,7 @@ def get_investment_data(investments):
     pie_chart_html = get_html_from_plot(plt.gcf())
     return [investments, plot_htmls, investment_data,pie_chart_html]
 
-
+#This function is used to get the investment data for a particular investment
 def get_investment_data_from_ticker(investment):
     investment_data = list()
     curr_date = date(2024, 3, 28)
