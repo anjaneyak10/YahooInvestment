@@ -4,12 +4,13 @@ from django.utils.dateparse import parse_date
 from .models import StockData, DividendData
 from django.db import IntegrityError
 
-
+# This is the function that will be called when /addInvestments is called
 def home(request):
     if indexStockPriceData(request.GET.get('stock')) and fetch_and_save_dividend_data(request.GET.get('stock')):
         return HttpResponse("Data indexed successfully")
     return HttpResponse("Error indexing data")
 
+# This function fetches stock price data from Yahoo Finance and saves it to the database
 def indexStockPriceData(stock_ticker):
     try:
         data = yf.download(stock_ticker, start="2022-12-31", end="2024-05-02")
@@ -26,14 +27,15 @@ def indexStockPriceData(stock_ticker):
                 adj_close_price=row['Adj Close']
             )
             stock_data.save()
-    except IntegrityError:
+    except IntegrityError as e:
+        print(e)
         return False
     except Exception as e:
         print(e)
         return False
     return True
 
-
+# This function fetches dividend data from Yahoo Finance and saves it to the database
 def fetch_and_save_dividend_data(ticker):
     try:
         start_date="1999-01-31"

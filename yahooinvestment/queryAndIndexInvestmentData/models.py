@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+# StockData and DividendData are the models that will be used to store the data
 class StockData(models.Model):
     ticker = models.CharField(max_length=10)
     date = models.DateField()
@@ -13,6 +13,7 @@ class StockData(models.Model):
 
     class Meta:
         db_table  = 'stock_data'
+        # This will ensure that the combination of ticker and date is unique
         unique_together = ('ticker', 'date')
 
 
@@ -20,7 +21,7 @@ class DividendData(models.Model):
     ticker = models.CharField(max_length=10)
     date = models.DateField()
     dividend = models.FloatField()
-
     class Meta:
-        unique_together = ('ticker', 'date')
         db_table = 'dividend_data'
+        # This will ensure that the combination of ticker and date is unique
+        unique_together = ('ticker', 'date')

@@ -34,3 +34,9 @@ Package home page: https://pypi.org/project/yfinance/
 - Create a new branch with your name
 - when all the requirements are met, push the branch to github
 
+
+## How to run the project
+- Set up the Database in settings.py
+- For indexing data into database make the following REST CALL- http://localhost:8000/addInvestments/?stock=AAPL
+- For viewing the data in the webpage, run the server and go to - http://localhost:8000/investmentDashboard/
+
