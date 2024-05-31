@@ -1,3 +1,8 @@
+<!-- Include Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+
 {% extends 'adminlte/base.html' %}
 
 <!-- Set title of app -->
@@ -7,8 +12,7 @@
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <h1>My Investments at Fidelity</h1>
-<!--        <h2>Fidelity Investments</h2>-->
+        <h1 class="mt-3 mb-3">Investments in Fidelity</h1>
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
@@ -31,19 +35,19 @@
                         <tbody>
                             {% for ticker, data in investment_data.items %}
                             <tr>
-    <td>{{ ticker }}</td>
-    <td>{{ data.0|floatformat:2 }}</td>
-    <td>{{ data.1}}</td>
-    <td>{{ data.2|floatformat:2 }}</td>
-    <td>{{ data.3|floatformat:2 }}</td>
-    <td>{{ data.4|floatformat:2 }}</td>
-    <td>{{ data.5|floatformat:2 }}</td>
-    <td style="color: {% if data.6 > 0 %}green{% else %}red{% endif %}">{{ data.6|floatformat:2 }}</td>
-    <td style="color: {% if data.7 > 0 %}green{% else %}red{% endif %}">{{ data.7|floatformat:2 }}</td>
-    <td style="color: {% if data.8 > 0 %}green{% else %}red{% endif %}">{{ data.8|floatformat:2 }}</td>
-    <td style="color: {% if data.9 > 0 %}green{% else %}red{% endif %}">{{ data.9|floatformat:2 }}</td>
-</tr>
-                    {% endfor %}
+                                <td>{{ ticker }}</td>
+                                <td>{{ data.0|floatformat:2 }}</td>
+                                <td>{{ data.1 }}</td>
+                                <td>{{ data.2|floatformat:2 }}</td>
+                                <td>{{ data.3|floatformat:2 }}</td>
+                                <td>{{ data.4|floatformat:2 }}</td>
+                                <td>{{ data.5|floatformat:2 }}</td>
+                                <td style="color: {% if data.6 > 0 %}green{% else %}red{% endif %}">{{ data.6|floatformat:2 }}</td>
+                                <td style="color: {% if data.7 > 0 %}green{% else %}red{% endif %}">{{ data.7|floatformat:2 }}</td>
+                                <td style="color: {% if data.8 > 0 %}green{% else %}red{% endif %}">{{ data.8|floatformat:2 }}</td>
+                                <td style="color: {% if data.9 > 0 %}green{% else %}red{% endif %}">{{ data.9|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -51,24 +55,122 @@
         </div>
     </div>
 </div>
-<div class="row">
+
+<div class="row mt-3">
     <div class="col-md-6">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Investment Value Line Chart</h3>
+            </div>
             <div class="card-body">
-                <h2>Tracking investments at Fidelity</h2>
-                {% for plot_html in plot_htmls %}
-                    {{ plot_html|safe }}
-                {% endfor %}
+                <div style="position: relative; height: 400px; width: 100%;">
+                    <canvas id="investmentLineChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Current Investment Value Distribution</h3>
+            </div>
             <div class="card-body">
-                <h2>Current Investment Value Distribution</h2>
-                {{ pie_chart_html|safe }}
+                <div style="position: relative; height: 400px; width: 100%;">
+                    <canvas id="pieChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var plotData = {{ plot_data | safe }};
+    var dates = plotData.dates;
+    var closePrices = plotData.close_prices;
+
+    // Prepare datasets for the line chart
+    var datasets = [];
+    for (var ticker in closePrices) {
+        if (closePrices.hasOwnProperty(ticker)) {
+            datasets.push({
+                label: ticker,
+                data: closePrices[ticker].map((value, index) => ({
+                    x: dates[index],
+                    y: value
+                })),
+                fill: false,
+                borderColor: getRandomColor(),
+                tension: 0.1
+            });
+        }
+    }
+
+    // Render the line chart
+    var lineCtx = document.getElementById('investmentLineChart').getContext('2d');
+    var lineChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        tooltipFormat: 'YYYY-MM-DD',
+                        displayFormats: {
+                            day: 'YYYY-MM-DD'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Price ($)'
+                    }
+                }
+            }
+        }
+    });
+
+    // Prepare data for the pie chart
+    var pieData = {
+        labels: Object.keys(closePrices),
+        datasets: [{
+            data: Object.keys(closePrices).map(ticker => closePrices[ticker][closePrices[ticker].length - 1]),
+            backgroundColor: Object.keys(closePrices).map(() => getRandomColor())
+        }]
+    };
+
+    // Render the pie chart
+    var pieCtx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: pieData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+});
+</script>
+
 {% endblock %}
